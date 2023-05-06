@@ -43,6 +43,7 @@ void disk_search_and_init()
 
     disk.type = FAMOS_DISK_TYPE_REAL;
     disk.sector_size = FAMOS_SECTOR_SIZE;
+    disk.filesystem = fs_resolve(&disk);
 }
 
 struct disk* disk_get(int index)
