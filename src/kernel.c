@@ -11,6 +11,7 @@
 #include "disk/disk.h"
 #include "fs/pparser.h"
 #include "disk/streamer.h"
+#include "task/tss.h"
 #include "gdt/gdt.h"
 #include "config.h"
 
@@ -80,11 +81,16 @@ void panic(const char* msg)
     while (1) {}
 }
 
+
+struct tss tss;
 struct gdt gdt_real[FAMOS_TOTAL_GDT_SEGMENTS];
 struct gdt_structured gdt_structured[FAMOS_TOTAL_GDT_SEGMENTS] = {
     {.base = 0x00, .limit = 0x00, .type = 0x00},                     // NULL Segment
     {.base = 0x00, .limit = 0xffffffff, .type = 0x9a},               // Kernel code Segment
-    {.base = 0x00, .limit = 0xffffffff, .type = 0x92}                // Kernel data Segment
+    {.base = 0x00, .limit = 0xffffffff, .type = 0x92},               // Kernel data Segment
+    {.base = 0x00, .limit = 0xffffffff, .type = 0xf8},               // User code Segment
+    {.base = 0x00, .limit = 0xffffffff, .type = 0xf2},               // User data Segment
+    {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9}     // TSS Segment
 };
 
 void kernel_main()
@@ -109,6 +115,15 @@ void kernel_main()
 
     // Initialize the interrupt descriptor table 
     idt_init();
+
+    // Setup the TSS 
+    memset(&tss, 0x00, sizeof(tss));
+
+    tss.esp0 = 0x600000;
+    tss.ss0 = KERNEL_DATA_SELECTOR;
+
+    // Load the TSS 
+    tss_load(0x28);
 
     // Setup paging
     kernel_chunk = paging_new_4gb(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
