@@ -19,4 +19,6 @@
 
 #define FAMOS_MAX_PATH 108 
 
+#define FAMOS_TOTAL_GDT_SEGMENTS 3 
+
 #endif
