@@ -105,7 +105,7 @@ struct gdt_structured gdt_structured[FAMOS_TOTAL_GDT_SEGMENTS] = {
 void kernel_main()
 {
     terminal_initialize();
-    print("Hello World!");
+    print("Hello World!\n");
 
     memset(gdt_real, 0x00, sizeof(gdt_real));
     gdt_structured_to_gdt(gdt_real, gdt_structured, FAMOS_TOTAL_GDT_SEGMENTS);
