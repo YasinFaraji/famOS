@@ -106,7 +106,7 @@ int paging_map_range(struct paging_4gb_chunk* directory, void* virtual_address, 
     for (int i = 0; i < count; i++)
     {
         res = paging_map(directory, virtual_address, physical_address, flags);
-        if (res == 0)
+        if (res < 0)
         {
             break;
         }
