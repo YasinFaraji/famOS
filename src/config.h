@@ -32,5 +32,7 @@
 #define USER_DATA_SEGMENT 0x23 
 #define USER_CODE_SEGMENT 0x1b 
 
+#define FAMOS_MAX_ISR80H_COMMANDS 1024 
+
 
 #endif
