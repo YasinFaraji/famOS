@@ -1,4 +1,4 @@
-FILES=./build/start.asm.o 
+FILES=./build/start.asm.o ./build/famos.asm.o
 INCLUDES=-I./src
 FLAGS= -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -8,8 +8,8 @@ all: ${FILES}
 ./build/start.asm.o: ./src/start.asm
 	nasm -f elf ./src/start.asm -o ./build/start.asm.o
 
-# ./build/peachos.asm.o: ./src/peachos.asm
-# 	nasm -f elf ./src/peachos.asm -o ./build/peachos.asm.o
+./build/famos.asm.o: ./src/famos.asm
+	nasm -f elf ./src/famos.asm -o ./build/famos.asm.o
 
 # ./build/peachos.o: ./src/peachos.c
 # 	i686-elf-gcc ${INCLUDES} $(FLAGS) -std=gnu99 -c ./src/peachos.c -o ./build/peachos.o

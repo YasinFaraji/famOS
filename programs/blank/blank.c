@@ -1,10 +1,12 @@
-// #include "famos.h"
+#include "famos.h"
 // #include "stdlib.h"
 // #include "stdio.h"
 // #include "string.h"
 
 int main(int argc, char** argv)
 {
+    print("Hello crazy\n");
+    while(1){}
     // while(1)
     // {
     //     print(argv[0]);
