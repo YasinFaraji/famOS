@@ -88,6 +88,52 @@ out_err:
     return 0;
 }
 
+static bool process_is_process_pointer(struct process* process, void* ptr)
+{
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == ptr)
+            return true;
+    }
+
+    return false;
+}
+
+static void process_allocation_unjoin(struct process* process, void* ptr)
+{
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == ptr)
+        {
+            process->allocations[i].ptr = 0x00;
+            process->allocations[i].size = 0;
+        }
+    }
+}
+
+void process_free(struct process* process, void* ptr)
+{
+    // Unlink the pages from the process for the given address
+    struct process_allocation* allocation = process_get_allocation_by_addr(process, ptr);
+    if (!allocation)
+    {
+        // Oops its not our pointer.
+        return;
+    }
+
+    int res = paging_map_to(process->task->page_directory, allocation->ptr, allocation->ptr, paging_align_address(allocation->ptr+allocation->size), 0x00);
+    if (res < 0)
+    {
+        return;
+    }
+
+    // Unjoin the allocation
+    process_allocation_unjoin(process, ptr);
+
+    // We can now free the memory.
+    kfree(ptr);
+}
+
 static int process_load_binary(const char* filename, struct process* process)
 {
     int res = 0;
