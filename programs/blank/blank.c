@@ -5,13 +5,6 @@
 
 int main(int argc, char** argv)
 {
-    while(1)
-    {
-        if (famos_getkey() != 0)
-        {
-            print("key was pressed\n");
-        }
-    }
     // while(1)
     // {
     //     print(argv[0]);
