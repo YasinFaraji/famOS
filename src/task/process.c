@@ -41,6 +41,99 @@ int process_switch(struct process* process)
     return 0;
 }
 
+static int process_find_free_allocation_index(struct process* process)
+{
+    int res = -ENOMEM;
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == 0)
+        {
+            res = i;
+            break;
+        }
+    }
+
+    return res;
+}
+
+void* process_malloc(struct process* process, size_t size)
+{
+    void* ptr = kzalloc(size);
+    if (!ptr)
+    {
+        goto out_err;
+    }
+
+    int index = process_find_free_allocation_index(process);
+    if (index < 0)
+    {
+        goto out_err;
+    }
+
+    int res = paging_map_to(process->task->page_directory, ptr, ptr, paging_align_address(ptr+size), PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+    if (res < 0)
+    {
+        goto out_err;
+    }
+
+    process->allocations[index].ptr = ptr;
+    process->allocations[index].size = size;
+    return ptr;
+
+out_err:
+    if(ptr)
+    {
+        kfree(ptr);
+    }
+    return 0;
+}
+
+static bool process_is_process_pointer(struct process* process, void* ptr)
+{
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == ptr)
+            return true;
+    }
+
+    return false;
+}
+
+static void process_allocation_unjoin(struct process* process, void* ptr)
+{
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == ptr)
+        {
+            process->allocations[i].ptr = 0x00;
+            process->allocations[i].size = 0;
+        }
+    }
+}
+
+void process_free(struct process* process, void* ptr)
+{
+    // Unlink the pages from the process for the given address
+    struct process_allocation* allocation = process_get_allocation_by_addr(process, ptr);
+    if (!allocation)
+    {
+        // Oops its not our pointer.
+        return;
+    }
+
+    int res = paging_map_to(process->task->page_directory, allocation->ptr, allocation->ptr, paging_align_address(allocation->ptr+allocation->size), 0x00);
+    if (res < 0)
+    {
+        return;
+    }
+
+    // Unjoin the allocation
+    process_allocation_unjoin(process, ptr);
+
+    // We can now free the memory.
+    kfree(ptr);
+}
+
 static int process_load_binary(const char* filename, struct process* process)
 {
     int res = 0;
