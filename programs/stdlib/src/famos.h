@@ -1,5 +1,5 @@
-#ifndef PEACHOS_H
-#define PEACHOS_H
+#ifndef FAMOS_H
+#define FAMOS_H
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -19,18 +19,18 @@ struct process_arguments
 
 
 void print(const char* filename);
-int peachos_getkey();
+int famos_getkey();
 
-void* peachos_malloc(size_t size);
-void peachos_free(void* ptr);
-void peachos_putchar(char c);
-int peachos_getkeyblock();
-void peachos_terminal_readline(char* out, int max, bool output_while_typing);
-void peachos_process_load_start(const char* filename);
-struct command_argument* peachos_parse_command(const char* command, int max);
-void peachos_process_get_arguments(struct process_arguments* arguments);
-int peachos_system(struct command_argument* arguments);
-int peachos_system_run(const char* command);
-void peachos_exit();
+void* famos_malloc(size_t size);
+void famos_free(void* ptr);
+void famos_putchar(char c);
+int famos_getkeyblock();
+void famos_terminal_readline(char* out, int max, bool output_while_typing);
+void famos_process_load_start(const char* filename);
+struct command_argument* famos_parse_command(const char* command, int max);
+void famos_process_get_arguments(struct process_arguments* arguments);
+int famos_system(struct command_argument* arguments);
+int famos_system_run(const char* command);
+void famos_exit();
 
 #endif

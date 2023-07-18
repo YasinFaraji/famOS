@@ -3,14 +3,14 @@
 section .asm
 
 global print:function
-global peachos_getkey:function
-global peachos_malloc:function
-global peachos_free:function
-global peachos_putchar:function
-global peachos_process_load_start:function
-global peachos_process_get_arguments:function 
-global peachos_system:function
-global peachos_exit:function
+global famos_getkey:function
+global famos_malloc:function
+global famos_free:function
+global famos_putchar:function
+global famos_process_load_start:function
+global famos_process_get_arguments:function 
+global famos_system:function
+global famos_exit:function
 
 ; void print(const char* message)
 print:
@@ -23,8 +23,8 @@ print:
     pop ebp
     ret
 
-; int peachos_getkey()
-peachos_getkey:
+; int famos_getkey()
+famos_getkey:
     push ebp
     mov ebp, esp
     mov eax, 2 ; Command getkey
@@ -32,8 +32,8 @@ peachos_getkey:
     pop ebp
     ret
 
-; void peachos_putchar(char c)
-peachos_putchar:
+; void famos_putchar(char c)
+famos_putchar:
     push ebp
     mov ebp, esp
     mov eax, 3 ; Command putchar
@@ -43,8 +43,8 @@ peachos_putchar:
     pop ebp
     ret
 
-; void* peachos_malloc(size_t size)
-peachos_malloc:
+; void* famos_malloc(size_t size)
+famos_malloc:
     push ebp
     mov ebp, esp
     mov eax, 4 ; Command malloc (Allocates memory for the process)
@@ -54,8 +54,8 @@ peachos_malloc:
     pop ebp
     ret
 
-; void peachos_free(void* ptr)
-peachos_free:
+; void famos_free(void* ptr)
+famos_free:
     push ebp
     mov ebp, esp
     mov eax, 5 ; Command 5 free (Frees the allocated memory for this process)
@@ -65,8 +65,8 @@ peachos_free:
     pop ebp
     ret
 
-; void peachos_process_load_start(const char* filename)
-peachos_process_load_start:
+; void famos_process_load_start(const char* filename)
+famos_process_load_start:
     push ebp
     mov ebp, esp
     mov eax, 6 ; Command 6 process load start ( stars a process )
@@ -76,8 +76,8 @@ peachos_process_load_start:
     pop ebp
     ret
 
-; int peachos_system(struct command_argument* arguments)
-peachos_system:
+; int famos_system(struct command_argument* arguments)
+famos_system:
     push ebp
     mov ebp, esp
     mov eax, 7 ; Command 7 process_system ( runs a system command based on the arguments)
@@ -88,8 +88,8 @@ peachos_system:
     ret
 
 
-; void peachos_process_get_arguments(struct process_arguments* arguments)
-peachos_process_get_arguments:
+; void famos_process_get_arguments(struct process_arguments* arguments)
+famos_process_get_arguments:
     push ebp
     mov ebp, esp
     mov eax, 8 ; Command 8 Gets the process arguments
@@ -99,8 +99,8 @@ peachos_process_get_arguments:
     pop ebp
     ret
 
-; void peachos_exit()
-peachos_exit:
+; void famos_exit()
+famos_exit:
     push ebp
     mov ebp, esp
     mov eax, 9 ; Command 9 process exit
