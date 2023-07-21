@@ -189,6 +189,13 @@ out:
     return res;
 }
 
+void* paging_get_physical_address(uint32_t* directory, void* virt)
+{
+    void* virt_addr_new = (void*) paging_align_to_lower_page(virt);
+    void* difference = (void*)((uint32_t) virt - (uint32_t) virt_addr_new);
+    return (void*)((paging_get(directory, virt_addr_new) & 0xfffff000) + difference);
+}
+
 uint32_t paging_get(uint32_t* directory, void* virt)
 {
     uint32_t directory_index = 0;
