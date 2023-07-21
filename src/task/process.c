@@ -111,6 +111,17 @@ static void process_allocation_unjoin(struct process* process, void* ptr)
     }
 }
 
+static struct process_allocation* process_get_allocation_by_addr(struct process* process, void* addr)
+{
+    for (int i = 0; i < FAMOS_MAX_PROGRAM_ALLOCATIONS; i++)
+    {
+        if (process->allocations[i].ptr == addr)
+            return &process->allocations[i];
+    }
+
+    return 0;
+}
+
 void process_free(struct process* process, void* ptr)
 {
     // Unlink the pages from the process for the given address
